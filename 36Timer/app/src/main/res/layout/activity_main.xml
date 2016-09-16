@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#00AAAA">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="限界："
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/limit_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="155"
+            android:textSize="20sp"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:background="#00FFAA">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="残業時間"
+            android:textSize="20sp" />
+        <EditText
+            android:id="@+id/edit_text_1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textSize="20sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="　日付"
+            android:textSize="20sp" />
+        <Button
+            android:id="@+id/date_minus_button"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:text="－"/>
+        <EditText
+            android:id="@+id/date_text_1"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:textSize="20sp" />
+        <Button
+            android:id="@+id/date_plus_button"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:text="＋"/>
+
+
+    </LinearLayout>
+
+    //ボタン
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <Button android:id="@+id/calculation_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="計算" />
+
+        <Button android:id="@+id/date_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="日付" />
+
+    </LinearLayout>
+
+
+
+    //画面下部のリストビュー
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>
