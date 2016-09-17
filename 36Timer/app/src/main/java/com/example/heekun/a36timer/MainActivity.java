@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------
         //各種オブジェクトをインスタンス化
         //----------------------------------
-
         //計算ボタン
         final Button calculationButton;
         calculationButton = (Button) findViewById(R.id.calculation_button);
@@ -55,13 +54,10 @@ public class MainActivity extends AppCompatActivity {
         final ArrayList<String> items = new ArrayList<String>();
 
         //日付の初期値のセット
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR); // 年
-        int month = cal.get(Calendar.MONTH); // 月
-        final int day = cal.get(Calendar.DAY_OF_MONTH); // 日
+        DateUtil dateUtil = new DateUtil();
+        String now = dateUtil.getNowDate();
         //日付ボックスへ初期値をセット
-        dateBox1.setText(year + "/" + (month + 1) + "/" + day);
-
+        dateBox1.setText(now);
 
         //－/＋ボタンをインスタンス化
         final Button dateMinusButton = (Button) findViewById(R.id.date_minus_button);
@@ -73,10 +69,11 @@ public class MainActivity extends AppCompatActivity {
             // ボタンがクリックされた時のハンドラ
             @Override
             public void onClick(View v) {
+                DateUtil dateUtil = new DateUtil();
                 //日付ボックスに入力されている値を取得
                 EditText dateBox = (EditText) findViewById(R.id.date_text_1);
                 String dateStr = dateBox.getText().toString();
-                String resultDate = changeDate(dateStr,false);  //変更する日付を取得
+                String resultDate = dateUtil.changeDate(dateStr,false);  //変更する日付を取得
                 dateBox.setText(resultDate);  //計算した日付を日付ボックスにセット
             }
         });
@@ -84,10 +81,11 @@ public class MainActivity extends AppCompatActivity {
             // ボタンがクリックされた時のハンドラ
             @Override
             public void onClick(View v) {
+                DateUtil dateUtil = new DateUtil();
                 //日付ボックスに入力されている値を取得
                 EditText dateBox = (EditText) findViewById(R.id.date_text_1);
                 String dateStr = dateBox.getText().toString();
-                String resultDate = changeDate(dateStr,true);  //変更する日付を取得
+                String resultDate = dateUtil.changeDate(dateStr,true);  //変更する日付を取得
                 dateBox.setText(resultDate);  //計算した日付を日付ボックスにセット
             }
         });
@@ -102,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //-------------------------
-                //入力内容の取得
+                //  入力内容の取得
                 //-------------------------
                 //残業時間
                 String inTimeStr = inputBox1.getText().toString();
@@ -127,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
                 listView1.setAdapter(adapter);
 
                 //-------------------------------------------------------------
-                //リストビューの要素の時間リストを取得
-                //   →リストビューに追加されている時間の合計値を算出
+                //  リストビューの要素の時間リストを取得
+                //    →リストビューに追加されている時間の合計値を算出
                 //-------------------------------------------------------------
                 ArrayList<Integer> timeList = getTimeListByListView();
                 int listCount = timeList.size();
@@ -151,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //------------------------------
-        //日付ボタンが押された際の処理
+        //  日付ボタンが押された際の処理
         //------------------------------
         //日付ボタン
         final Button dateButton;
@@ -165,43 +163,11 @@ public class MainActivity extends AppCompatActivity {
                 datePicker.show(getSupportFragmentManager(), "datePicker");
             }
         });
-
     }
-
-    public String changeDate(String date, Boolean flg) {
-        String str = changeDate(date, flg, 1);
-        return str;
-    }
-
-    public String changeDate(String date, Boolean flg, Integer value) {
-        // Format形式
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        // Date型変換
-        Date formatDate;
-        try {
-            formatDate = (Date) sdf.parse(date);
-        } catch (ParseException e) {
-            toastMake("日付は次の形式で入力してください：YYYY/MM/DD");
-            e.printStackTrace();
-            return "";
-        }
-        Calendar now = Calendar.getInstance();  ////Calendarクラスのインスタンスを生成
-        now.setTime(formatDate);    ////Date型をCalendar型に変換
-        if (flg) {
-            now.add(Calendar.DAY_OF_MONTH, +value);  //日付を＋１
-        } else {
-            now.add(Calendar.DAY_OF_MONTH, -value);  //日付を－１
-        }
-
-        String ret = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + "/" + now.get(Calendar.DAY_OF_MONTH);  //計算した日付を日付ボックスにセット
-        return ret;
-    }
-
 
 
     /**
      * 日付ボタンに日付を設定（YYYY/MM/DD形式）
-     *
      * @param year  設定する年
      * @param month 設定する月
      * @param day   設定する日
@@ -219,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * calculation 残り残業時間を計算する
-     *
      * @param time 今日の残業時間
      * @return int 残り残業時間
      */
@@ -238,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * toastMake トースト表示処理
-     *
      * @param message トーストに表示する文字列
      * @param x       横軸位置
      * @param y       縦軸位置
