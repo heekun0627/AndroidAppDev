@@ -5,25 +5,43 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#00AAAA">
+        android:gravity="center"
+        android:background="#000000"
+        >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="限界："
-            android:textSize="20sp"/>
         <TextView
             android:id="@+id/limit_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="155"
-            android:textSize="20sp"/>
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:background="#000000"
+            android:textColor="#ffffff"/>
+        <TextView
+            android:id="@+id/slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="／"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:background="#000000"
+            android:textColor="#ffffff"/>
+        <TextView
+            android:id="@+id/mother_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="155"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:background="#000000"
+            android:textColor="#ffffff"/>
 
 
     </LinearLayout>
@@ -32,24 +50,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="bottom"
-        android:background="#00FFAA">
+        android:layout_gravity="bottom">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="残業時間"
-            android:textSize="20sp" />
-        <EditText
-            android:id="@+id/edit_text_1"
+            android:text=" 残業時間"
+            android:textSize="16sp" />
+        <Spinner
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/hour_spinner"
+            android:layout_below="@+id/textView"
+            android:prompt="@string/spnPrompt2"
+            android:entries="@array/spnEntries2"
+            android:background="#ffffffff"
+            android:popupBackground="#ffffffff" />
+        <Spinner
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp" />
+            android:id="@+id/minutes_spinner"
+            android:layout_below="@+id/textView"
+            android:prompt="@string/spnPrompt"
+            android:entries="@array/spnEntries"
+            android:background="#ffffffff"
+            android:popupBackground="#ffffffff" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="　日付"
-            android:textSize="20sp" />
+            android:text=" 日付"
+            android:textSize="16sp" />
         <Button
             android:id="@+id/date_minus_button"
             android:layout_width="40dp"
@@ -91,7 +121,7 @@
     //画面下部のリストビュー
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="300dp">
 
         <ListView
             android:id="@+id/listView1"
@@ -100,7 +130,22 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/fab_base"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:layout_anchorGravity="bottom|right|end"/>
+
+    </LinearLayout>
 
 
 

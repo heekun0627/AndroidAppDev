@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">36Timer</string>
+    <string name="spnPrompt2">プロンプトのテキスト</string>
+    <string name="spnPrompt">プロンプトのテキスト</string>
 </resources>

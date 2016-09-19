@@ -1,32 +1,30 @@
 package com.example.heekun.a36timer;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
+import android.graphics.Typeface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.Gravity;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.lang.Exception;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
-import android.text.format.Time;
+import static com.example.heekun.a36timer.R.id.date_button;
+import static com.example.heekun.a36timer.R.id.date_text_1;
 
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
+
+    //コンストラクタ
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,25 +37,39 @@ public class MainActivity extends AppCompatActivity {
         //計算ボタン
         final Button calculationButton;
         calculationButton = (Button) findViewById(R.id.calculation_button);
-        //入力テキストボックス
-        final EditText inputBox1;
-        inputBox1 = (EditText) findViewById(R.id.edit_text_1);
-        //出力テキストボックス
+        //残り時間テキストボックス
         final TextView limitTimeBox;
         limitTimeBox = (TextView) findViewById(R.id.limit_time);
+        limitTimeBox.setTypeface(Typeface.SANS_SERIF,Typeface.BOLD);  //使用フォントの変更
         //入力日付テキストボックス
         final EditText dateBox1;
         dateBox1 = (EditText) findViewById(R.id.date_text_1);
         //リストビュー
         final ListView listView1 = (ListView) findViewById(R.id.listView1);
-
         final ArrayList<String> items = new ArrayList<String>();
+
+        //残業時間スピナー
+        final Spinner hourSpinner;  //"時"入力部スピナー
+        hourSpinner = (Spinner)findViewById(R.id.hour_spinner);
+        final Spinner minutesSpinner ;  //"分"入力部スピナー
+        minutesSpinner = (Spinner)findViewById(R.id.minutes_spinner);
 
         //日付の初期値のセット
         DateUtil dateUtil = new DateUtil();
         String now = dateUtil.getNowDate();
         //日付ボックスへ初期値をセット
         dateBox1.setText(now);
+
+        //plusボタン（FloatingActionButton）
+        final FloatingActionButton fab ;
+        fab = (FloatingActionButton)findViewById(R.id.fab_plus);
+        fab.show();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculationButton.callOnClick();  //[計算]ボタンを押したことと同様にする
+            }
+        });
 
         //－/＋ボタンをインスタンス化
         final Button dateMinusButton = (Button) findViewById(R.id.date_minus_button);
@@ -90,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         //------------------------------
         //計算ボタンが押された際の処理
         //------------------------------
@@ -102,20 +112,30 @@ public class MainActivity extends AppCompatActivity {
                 //-------------------------
                 //  入力内容の取得
                 //-------------------------
-                //残業時間
-                String inTimeStr = inputBox1.getText().toString();
-                if (inTimeStr.equals("")) {
-                    toastMake("残業時間を入力してください");
-                    return;
-                }
-                //日付
+                //入力された残業時間をスピナーより取得
+                String inHourStr = hourSpinner.getSelectedItem().toString();
+                String inMinutesStr = minutesSpinner.getSelectedItem().toString();
+                String setTimeStr = inHourStr + "時間" + inMinutesStr + "分";
+                //入力された日付をスピナーより取得
                 String inDateStr = dateBox1.getText().toString();
                 if (inDateStr.equals("")) {
                     toastMake("残業日付を入力してください");
                     return;
                 }
+                //入力日付がすでにリストに存在しないか確認
+                EditText dateText = (EditText) findViewById(R.id.date_text_1);
+                String inDate = dateText.getText().toString();
+                ArrayList<String> dateList = new ArrayList<String>();
+                dateList = getDateListByListView();  //リスト入力済みの日付を配列に格納
+                for(String date : dateList) {
+                    if (inDate.equals(date)) {
+                        toastMake("その日付は既に入力されています");
+                        return;
+                    }
+                }
                 //リストビューにデータを追加
-                items.add("時間：" + inTimeStr + "　日付：" + inDateStr);
+                //items.add("時間：" + inTimeStr + "　日付：" + inDateStr);
+                items.add(inDateStr +  "　" + setTimeStr);
                 // Adapter - ArrayAdapter
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                         MainActivity.this,
@@ -147,13 +167,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //------------------------------
         //  日付ボタンが押された際の処理
         //------------------------------
         //日付ボタン
         final Button dateButton;
-        dateButton = (Button) findViewById(R.id.date_button);
+        dateButton = (Button) findViewById(date_button);
         dateButton.setOnClickListener(new View.OnClickListener() {
             // ボタンがクリックされた時のハンドラ
             @Override
@@ -161,6 +180,20 @@ public class MainActivity extends AppCompatActivity {
                 //DatePickerダイアログを表示
                 DatePickerDialogFragment datePicker = new DatePickerDialogFragment();
                 datePicker.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
+
+        //----------------------------------------
+        //  リスト項目が長押しされた時の処理
+        //----------------------------------------
+        listView1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listView = (ListView) parent;
+                String item = (String) listView.getItemAtPosition(position);  //選択項目の取得
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>)listView.getAdapter();  //リストビューのアダプターを取得
+                adapter.remove(item);  //長押しされた項目の削除
+                return false;
             }
         });
     }
@@ -174,14 +207,20 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setDateToButton(int year, int month, int day) {
         //セットする文字列を生成
-        String setStr = Integer.toString(year) + "/" + Integer.toString(month) + "/" + Integer.toString(day);
-        toastMake(setStr, 100, 100);
+        //String setStr = Integer.toString(year) + "/" + Integer.toString(month) + "/" + Integer.toString(day);
+        String setStr = "YYYY/MM/DD";
+
+        EditText dateText = (EditText) findViewById(date_text_1);
+        dateText.setText(setStr);
         //日付ボタンをインスタンス化
         //Button dateButton = (Button)findViewById(R.id.date_button);
         //日付ボタンに文字列をセット
         //dateButton.setText(setStr);
     }
-
+    public Button getDateButton(){
+        Button dateButton = (Button)findViewById(date_text_1);
+        return dateButton;
+    }
 
     /**
      * calculation 残り残業時間を計算する
@@ -191,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
     public int calculation(int time) {
         int limit = 155;
         int result;
-        result = limit - time;
+        result = (limit * 60 - time) / 60;
         return result;
     }
 
@@ -223,11 +262,12 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0;i<listCount;i++){
             //View itemView = listView.getChildAt(i);
             String item = (String) listView.getItemAtPosition(i);
-            String[] tmp = item.split("　");
-            int time = (Integer)Integer.parseInt(tmp[0].replace("時間：",""));
-            timeList.add(time);    //リストビューの要素の時間を数値型でadd
+            String[] tmp = item.replace("分","").split("　");
+            String[] timeArray = tmp[1].split("時間");
+            String timeStr = conversionToMinutes(timeArray[0],timeArray[1]);
+            timeList.add(Integer.parseInt(timeStr));    //リストビューの要素の時間を分に換算して数値型でadd
         }
-        return timeList;    //リストビューの要素の時間が詰まったArrayListを返却
+        return timeList;    //リストビューの要素の時間（分形式）が詰まったArrayListを返却
     }
 
     public ArrayList<String> getDateListByListView() {
@@ -239,10 +279,24 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0 ; i < listCount ; i++) {
             String item = (String) listView.getItemAtPosition(i);
             String[] tmp = item.split("　");
-            String date = (String)tmp[1].replace("日付：","");
+            String date = tmp[0];
             dateList.add(date);
         }
         return dateList;
+    }
 
+    //時間を分に換算
+    public String conversionToMinutes(String hour , String minutes) {
+        int hourInt = Integer.parseInt(hour);
+        int minutesInt = Integer.parseInt(minutes);
+        int sum = hourInt * 60 + minutesInt;
+        return Integer.toString(sum);  //分換算した時間を返却
+    }
+    //分を時間に換算（"hour時minutes分"形式）
+    public String conversionToHour(String minutes) {
+        int minutesInt = Integer.parseInt(minutes);
+        int hourInt = minutesInt / 60;
+        minutesInt = minutesInt - hourInt * 60;
+        return Integer.toString(hourInt) +"時間" + Integer.toString(minutesInt) + "分";
     }
 }
